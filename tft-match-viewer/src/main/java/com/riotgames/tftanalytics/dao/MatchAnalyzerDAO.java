@@ -2,15 +2,13 @@ package com.riotgames.tftanalytics.dao;
 
 import javax.persistence.RollbackException;
 
-
 import org.hibernate.Transaction;
 
+import com.riotgames.tftanalytics.bean.MatchAnalyzer;
 
-import com.riotgames.tftanalytics.bean.Joueur;
 
-
-public class JoueurDAO extends DAO {
-	public void save(Joueur e) {
+public class MatchAnalyzerDAO extends DAO{
+	public void save(MatchAnalyzer e) {
 		Transaction t = session.beginTransaction();
 		try {
 			session.save(e);
@@ -21,11 +19,11 @@ public class JoueurDAO extends DAO {
 		}
 	}
 	
-	public Joueur get(int id) {
+	public MatchAnalyzer get(int id) {
 		Transaction t = session.beginTransaction();
-		Joueur e = null;
+		MatchAnalyzer e = null;
 		try {
-			e = (Joueur) session.get(Joueur.class, id);
+			e = (MatchAnalyzer) session.get(MatchAnalyzer.class, id);
 			t.commit();
 		} catch (RollbackException exep) {
 			t.rollback();
