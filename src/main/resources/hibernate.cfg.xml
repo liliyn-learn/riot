@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hbm2ddl.auto">create</property> <!-- mode create -->
+		<property name="hibernate.dialect">
+			org.hibernate.dialect.MySQL5Dialect
+		</property>
+		<property name="hibernate.connection.driver_class">
+			com.mysql.jdbc.Driver
+		</property>
+		<property name="hibernate.connection.url">
+			jdbc:mysql://localhost:3306/riot?serverTimezone=UTC
+		</property>
+		<property name="hibernate.connection.username">
+			root
+		</property>
+		<property name="hibernate.connection.password">
+			kakakokokiki
+		</property>
+		<mapping class="com.riotgames.tftanalytics.bean.Joueur"/>
+		<mapping class="com.riotgames.tftanalytics.bean.Match"/>
+		<mapping class="com.riotgames.tftanalytics.bean.MatchAnalyzer"/>
+	</session-factory>
+</hibernate-configuration>
