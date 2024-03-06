@@ -163,8 +163,9 @@ public class RiotAPI {
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
 			TreeNode jsonNode = objectMapper.readTree(response).get("metadata").get("participants");
-			ObjectReader reader = objectMapper.readerFor(ArrayList.class);
-			ArrayList<Object> listIds = reader.readValue((JsonParser) jsonNode);
+			ArrayList<Object> listIds = objectMapper.treeToValue(jsonNode, ArrayList.class);
+//			ObjectReader reader = objectMapper.readerFor(ArrayList.class);
+//			ArrayList<Object> listIds = reader.readValue((JsonParser) jsonNode);
 			return listIds;
 		} catch (Exception e) {
 			throw new RiotException("Données reçu invalides");
@@ -242,7 +243,7 @@ public class RiotAPI {
 			connection.setRequestProperty("Accept-Language", "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7");
 			connection.setRequestProperty("Accept-Charset", "application/x-www-form-urlencoded; charset=UTF-8");
 			connection.setRequestProperty("Origin", "https://developer.riotgames.com");
-			connection.setRequestProperty("X-Riot-Token", "RGAPI-28bd35d9-7cbb-4559-960a-a70aa3cb26b5");
+			connection.setRequestProperty("X-Riot-Token", "RGAPI-b4538dd8-46c1-4052-9882-ad72964f0ffc");
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 

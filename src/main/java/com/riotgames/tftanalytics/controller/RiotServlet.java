@@ -75,7 +75,7 @@ public class RiotServlet extends HttpServlet {
 		        matchs.add(match);
 		    }
 		} catch (RiotException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
 
 	    // Passage des données à la JSP
