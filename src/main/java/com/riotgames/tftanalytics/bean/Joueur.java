@@ -40,6 +40,8 @@ public class Joueur {
 				this.winRate = -1;
 			}
 		} catch (RiotException e) {
+			this.joueurRank = "Sans rang";
+			this.winRate = -1;
 			System.err.println(e);
 		}
 	}
@@ -60,8 +62,13 @@ public class Joueur {
 		HashMap<Object, Object> infos;
 		try {
 			infos = api.getAccountInfos(this.name);
-			this.joueurRank = (String) infos.get("tier");
-			this.winRate = (double) (Integer) infos.get("wins") / ((Integer) infos.get("losses") + (Integer) infos.get("wins")) * 100;
+			if (infos!=null) {
+				this.joueurRank = (String) infos.get("tier");
+				this.winRate = (double) (Integer) infos.get("wins") / ((Integer) infos.get("losses") + (Integer) infos.get("wins")) * 100;
+			} else {
+				this.joueurRank = "Sans rang";
+				this.winRate = -1;
+			}
 		} catch (Exception e) {
 			this.joueurRank = "None";
 			this.winRate = -1;

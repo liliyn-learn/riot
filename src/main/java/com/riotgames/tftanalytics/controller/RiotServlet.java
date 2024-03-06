@@ -6,8 +6,10 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.riotgames.tftanalytics.bean.Joueur;
 import com.riotgames.tftanalytics.bean.Match;
+import com.riotgames.tftanalytics.bean.MatchAnalyzer;
 import com.riotgames.tftanalytics.dao.JoueurDAO;
 import com.riotgames.tftanalytics.dao.MatchDAO;
 import com.riotgames.tftanalytics.exception.RiotException;
@@ -42,46 +45,88 @@ public class RiotServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String puuid = request.getParameter("puuid");
-		if (puuid == null || puuid.isEmpty()) {
-			response.sendRedirect("index.jsp");
-			return;
-		}
-
-		RiotAPI api = new RiotAPI();
-		Joueur joueur = new Joueur(puuid);
-
-		List<Match> matchs = new ArrayList<>();
-
 		try {
-			ArrayList<String> matchIds = api.getMatchIds(puuid);
 
-			// Limiter à 10 derniers matchs si nécessaire
+			String puuid = request.getParameter("puuid");
+			if (puuid == null || puuid.isEmpty()) {
+				response.sendRedirect("index.jsp");
+				return;
+			}
+
+			RiotAPI api = new RiotAPI();
+			Joueur joueur = new Joueur(puuid);
+
+			HashMap<String, Double> unitsPresence = new HashMap<String, Double>();
+
+			ArrayList<String> matchIds = api.getMatchIds(joueur.getId()); // Utiliser l'ID du joueur pour récupérer les matchs
+
+			// Limiter la liste à 10 derniers matchs si elle contient plus de 10 éléments
 			if (matchIds.size() > 10) {
 				matchIds = new ArrayList<>(matchIds.subList(matchIds.size() - 10, matchIds.size()));
 			}
+			HashMap<Match, Integer> matchsMap = new HashMap<Match, Integer>();
 
+			// Pour chaque ID de match, récupérer les identifiants des joueurs participants et créer un objet Match
 			for (String matchId : matchIds) {
 				ArrayList<Object> participantPuuidsObjects = api.getMatchPlayers(matchId);
+				MatchAnalyzer matchAnalyzer =  new MatchAnalyzer(joueur.getId(), matchId);
 
 				List<String> participantDetails = new ArrayList<>();
 				for (Object participantPuuidObject : participantPuuidsObjects) {
-					String participantPuuidObj = (String) participantPuuidObject;
-					String participantName = api.getPseudo(participantPuuidObj);
-					participantDetails.add(participantName + " (" + participantPuuidObj + ")");
+					String participantPuuid = (String) participantPuuidObject; // Conversion explicite de Object à String
+					// Conversion de PUUID en pseudo
+					String participantName = encodeForURL(api.getPseudo(participantPuuid));
+					// Ajout du nom et du PUUID sous la forme "pseudo (PUUID)"
+					participantDetails.add(participantName + " (" + participantPuuid + ")");
 				}
 
-				Match match = new Match(matchId, participantDetails);
-				matchs.add(match);
+				ArrayList<String> units = (ArrayList<String>) matchAnalyzer.getUnits();
+				for (String unit : units) {
+					if (!unitsPresence.keySet().contains(unit)) {
+						unitsPresence.put(unit, (double) 1);
+					}
+					else {
+						unitsPresence.put(unit,(double) unitsPresence.get(unit)+1);
+					}
+				}
+				Match match = new Match(matchId, participantDetails); // Assurez-vous que le constructeur de Match accepte une List<String>
+				matchsMap.put(match, matchAnalyzer.getPlacement());
+			} 
+
+			double sum = 0;
+			ArrayList<Double> presences = new ArrayList<>(unitsPresence.values());
+			for (double presence : presences) {
+				sum += presence;
 			}
-		} catch (Exception e) {
-			System.err.println(e);
+
+			HashMap<String, Double> mapMax = new HashMap<String, Double>();
+
+			for (int i = 0; i<=2;i++) {
+				String maxKey = null;
+				double max = Collections.max(unitsPresence.values());
+				for (Map.Entry<String, Double> entry : unitsPresence.entrySet()) {
+					if (entry.getValue() == max) {
+						maxKey = entry.getKey();
+						break; 
+					}
+				}
+				if (maxKey != null) {
+					mapMax.put(maxKey, max/sum*100);
+					unitsPresence.remove(maxKey);
+				}
+			}
+			// Passage des données à la JSP
+			request.setAttribute("joueur", joueur);
+			request.setAttribute("matchsMap", matchsMap);
+			request.setAttribute("mapMax", mapMax);
+
+			// Rediriger vers Result.jsp pour afficher les données
+			request.getRequestDispatcher("/WEB-INF/result.jsp").forward(request, response);
+		} catch (RiotException e) {
+			request.setAttribute("erreur", "Joueur Introuvable : "+e.getMess());
+			request.getRequestDispatcher("index.jsp").forward(request, response);
+			System.err.println(e);		
 		}
-
-		request.setAttribute("joueur", joueur);
-		request.setAttribute("matchs", matchs);
-
-		request.getRequestDispatcher("/WEB-INF/result.jsp").forward(request, response);
 	}
 
 	/**
@@ -93,33 +138,33 @@ public class RiotServlet extends HttpServlet {
 			String pseudo = request.getParameter("pseudo");
 			pseudo = decodeForURL(pseudo);
 			String tag = request.getParameter("tag");
-			
+
 			if (pseudo.isEmpty()) {
 				throw new RiotException("pseudo ne peut pas etre vide");
 			}
 			if (tag.isEmpty()) {
 				throw new RiotException("tag ne peut pas etre vide");
 			}
-
-			// Création d'une nouvelle instance de Joueur
+			
 			Joueur joueur = new Joueur(pseudo, tag);
 
-			// Liste pour stocker les objets Match
+			HashMap<String, Double> unitsPresence = new HashMap<String, Double>();
 
 			// Utilisation de getMatchIds pour récupérer les IDs de matchs
 			RiotAPI api = new RiotAPI();
-			
+
 			ArrayList<String> matchIds = api.getMatchIds(joueur.getId()); // Utiliser l'ID du joueur pour récupérer les matchs
 
 			// Limiter la liste à 10 derniers matchs si elle contient plus de 10 éléments
 			if (matchIds.size() > 10) {
 				matchIds = new ArrayList<>(matchIds.subList(matchIds.size() - 10, matchIds.size()));
 			}
-			List<Match> matchs = new ArrayList<>();
+			HashMap<Match, Integer> matchsMap = new HashMap<Match, Integer>();
 
 			// Pour chaque ID de match, récupérer les identifiants des joueurs participants et créer un objet Match
 			for (String matchId : matchIds) {
 				ArrayList<Object> participantPuuidsObjects = api.getMatchPlayers(matchId);
+				MatchAnalyzer matchAnalyzer =  new MatchAnalyzer(joueur.getId(), matchId);
 
 				List<String> participantDetails = new ArrayList<>();
 				for (Object participantPuuidObject : participantPuuidsObjects) {
@@ -130,17 +175,50 @@ public class RiotServlet extends HttpServlet {
 					participantDetails.add(participantName + " (" + participantPuuid + ")");
 				}
 
+				ArrayList<String> units = (ArrayList<String>) matchAnalyzer.getUnits();
+				for (String unit : units) {
+					if (!unitsPresence.keySet().contains(unit)) {
+						unitsPresence.put(unit, (double) 1);
+					}
+					else {
+						unitsPresence.put(unit,(double) unitsPresence.get(unit)+1);
+					}
+				}
 				Match match = new Match(matchId, participantDetails); // Assurez-vous que le constructeur de Match accepte une List<String>
-				matchs.add(match);
-			}
+				matchsMap.put(match, matchAnalyzer.getPlacement());
+			} 
+			
 			new JoueurDAO().save(joueur);
-			for (Match m : matchs) {
+			for (Match m : matchsMap.keySet()) {
 				new MatchDAO().save(m);
 			}
 
+			double sum = 0;
+			ArrayList<Double> presences = new ArrayList<>(unitsPresence.values());
+			for (double presence : presences) {
+				sum += presence;
+			}
+
+			HashMap<String, Double> mapMax = new HashMap<String, Double>();
+
+			for (int i = 0; i<=2;i++) {
+				String maxKey = null;
+				double max = Collections.max(unitsPresence.values());
+				for (Map.Entry<String, Double> entry : unitsPresence.entrySet()) {
+					if (entry.getValue() == max) {
+						maxKey = entry.getKey();
+						break; 
+					}
+				}
+				if (maxKey != null) {
+					mapMax.put(maxKey, max/sum*100);
+					unitsPresence.remove(maxKey);
+				}
+			}
 			// Passage des données à la JSP
 			request.setAttribute("joueur", joueur);
-			request.setAttribute("matchs", matchs);
+			request.setAttribute("matchsMap", matchsMap);
+			request.setAttribute("mapMax", mapMax);
 
 			// Rediriger vers Result.jsp pour afficher les données
 			request.getRequestDispatcher("/WEB-INF/result.jsp").forward(request, response);
@@ -162,7 +240,7 @@ public class RiotServlet extends HttpServlet {
 		}
 	}
 
-	
+
 	public String decodeForURL(String value) {
 		try {
 			return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());

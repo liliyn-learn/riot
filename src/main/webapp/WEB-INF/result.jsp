@@ -30,8 +30,12 @@
 			<td>${joueur.id}</td>
 			<td>${joueur.name}</td>
 			<td>${joueur.rank}</td>
-			<c:if test="${joueur.winRate!=-1}"><td>${joueur.winRate}%</td></c:if>
-			<c:if test="${joueur.winRate==-1}"><td>Donnée insuffisantes</td></c:if>
+			<c:if test="${joueur.winRate!=-1}">
+				<td>${joueur.winRate}%</td>
+			</c:if>
+			<c:if test="${joueur.winRate==-1}">
+				<td>Donnée insuffisantes</td>
+			</c:if>
 		</tr>
 	</table>
 
@@ -41,25 +45,35 @@
 			<th>Match ID</th>
 			<th>Participants PUUIDs</th>
 		</tr>
-		<c:forEach var="match" items="${matchs}">
+		<c:forEach var="match" items="${matchsMap.keySet()}">
 			<tr>
 				<td>${match.matchId}</td>
-				<td><c:forEach var="match" items="${matchs}">
-						<tr>
-							<td>${match.matchId}</td>
-							<td><c:forEach var="participant"
-									items="${match.participants}">
-									<c:set var="participantInfo"
-										value="${fn:split(participant, ' (')}" />
-									<c:set var="puuid"
-										value="${fn:substringBefore(participantInfo[1], ')')}" />
-									<a href="riotservlet?puuid=${puuid}">${participantInfo[0]}</a>
-								</c:forEach></td>
-						</tr>
+				<td><c:forEach var="participant" items="${match.participants}">
+						<c:set var="participantInfo"
+							value="${fn:split(participant, ' (')}" />
+						<c:set var="puuid"
+							value="${fn:substringBefore(participantInfo[1], ')')}" />
+						<a href="riotservlet?puuid=${puuid}">${participantInfo[0]}</a>
 					</c:forEach></td>
+				<td>${matchsMap.get(match)}</td>
 			</tr>
 		</c:forEach>
 	</table>
+
+	<h2>Unités Favorites</h2>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Presence</th>
+		</tr>
+		<c:forEach var="maxKey" items="${mapMax.keySet()}">
+			<tr>
+				<td>${maxKey}</td>
+				<td>${mapMax.get(maxKey)}%</td>
+			</tr>
+		</c:forEach>
+	</table>
+	
 	<a href="index.jsp">Nouvelle Recherche</a>
 </body>
 </html>

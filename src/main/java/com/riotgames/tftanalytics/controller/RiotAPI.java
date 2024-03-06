@@ -196,7 +196,7 @@ public class RiotAPI {
 				if (objectMapper.treeToValue(participant.get("puuid"), String.class).equals(puuid)) {
 					placement = objectMapper.treeToValue(participant.get("placement"), Integer.class);
 					for (TreeNode unit : participant.get("units")) {
-						units.add(objectMapper.treeToValue(unit.get("character_id"), String.class).substring(6));
+						units.add(objectMapper.treeToValue(unit.get("character_id"), String.class).split("_")[1]);
 					}
 					break;
 				}

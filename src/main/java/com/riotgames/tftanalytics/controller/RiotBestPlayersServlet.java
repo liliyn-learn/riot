@@ -55,7 +55,7 @@ public class RiotBestPlayersServlet extends HttpServlet {
 		doGet(request, response);
 	}
 	
-    private <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
 
         Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
