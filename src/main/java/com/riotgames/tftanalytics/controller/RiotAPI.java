@@ -1,7 +1,9 @@
 package com.riotgames.tftanalytics.controller;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -121,22 +123,30 @@ public class RiotAPI {
 	
 	/**
 	 * @param 	puuid 	Le puuid du joueur
-	 * @return 			null en cas d'erreur, sinon une liste des ids des 20 derniers match que le joueur a joué
+	 * @return 			null en cas d'erreur, sinon une liste des ids des 5 derniers match que le joueur a joué
 	 * @throws RiotException 
 	 */
 	public ArrayList<String> getMatchIds(String puuid) throws RiotException {
-		ArrayList<String> listIds = null;
-		String urlAPI = "https://europe.api.riotgames.com/tft/match/v1/matches/by-puuid/"+puuid+"/ids?start=0&count=20";
-		String response = askAPI(urlAPI);
-		if (response == null || response.isEmpty()) {
-			return null;
-		}
-		try {
-			ArrayList<String> list = new ObjectMapper().readValue(response,ArrayList.class);
-			return list;
-		} catch (Exception e) {
+	    ArrayList<String> listIds = new ArrayList<>();
+	    String urlAPI = "https://europe.api.riotgames.com/tft/match/v1/matches/by-puuid/" + puuid + "/ids?start=0&count=5";
+	    try {
+	        String response = askAPI(urlAPI);
+	        
+	        if (response != null && !response.isEmpty()) {
+	            ObjectMapper objectMapper = new ObjectMapper();
+	            listIds = objectMapper.readValue(response, new TypeReference<ArrayList<String>>() {});
+	        }
+	    } catch (IOException e) {
+	        if (e instanceof HttpRetryException) {
+	            HttpRetryException httpRetryException = (HttpRetryException) e;
+	            // Logique de réessai basée sur httpRetryException.getRetryAfter()
+	        } else {
+				throw new RiotException("Données reçu invalides");
+	        }
+	    } catch (Exception e) {
 			throw new RiotException("Données reçu invalides");
-		}
+	    }
+	    return listIds;
 	}
 
 	/**
