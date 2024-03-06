@@ -30,7 +30,8 @@
 			<td>${joueur.id}</td>
 			<td>${joueur.name}</td>
 			<td>${joueur.rank}</td>
-			<td>${joueur.winRate}%</td>
+			<c:if test="${joueur.winRate!=-1}"><td>${joueur.winRate}%</td></c:if>
+			<c:if test="${joueur.winRate==-1}"><td>Donnée insuffisantes</td></c:if>
 		</tr>
 	</table>
 
@@ -52,7 +53,7 @@
 										value="${fn:split(participant, ' (')}" />
 									<c:set var="puuid"
 										value="${fn:substringBefore(participantInfo[1], ')')}" />
-									<a href="RiotServlet?puuid=${puuid}">${participantInfo[0]}</a>
+									<a href="riotservlet?puuid=${puuid}">${participantInfo[0]}</a>
 								</c:forEach></td>
 						</tr>
 					</c:forEach></td>

@@ -8,7 +8,13 @@ import com.riotgames.tftanalytics.bean.MatchAnalyzer;
 
 
 public class MatchAnalyzerDAO extends DAO{
+	
+	public MatchAnalyzerDAO() {
+		super();
+	}
+
 	public void save(MatchAnalyzer e) {
+		session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		try {
 			session.save(e);
@@ -17,9 +23,11 @@ public class MatchAnalyzerDAO extends DAO{
 			t.rollback();
 			System.err.println(exep.getMessage());
 		}
+		session.close();
 	}
 	
 	public MatchAnalyzer get(int id) {
+		session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		MatchAnalyzer e = null;
 		try {
@@ -29,6 +37,7 @@ public class MatchAnalyzerDAO extends DAO{
 			t.rollback();
 			System.err.println(exep.getMessage());
 		}
+		session.close();
 		return e;
 	}
 }

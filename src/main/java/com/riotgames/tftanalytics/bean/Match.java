@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "MatchPlayed")
@@ -18,8 +19,8 @@ public class Match {
 	
 	private String matchId;
 	
-    @OneToMany(cascade = CascadeType.ALL) // CascadeType.ALL assure que les opérations de persistance, mise à jour, suppression, etc., sont propagées aux joueurs
-	private List<String> participantIds; // Supposons que chaque match a une liste de joueurs participants
+    @Transient
+	private List<String> participantIds;
 
     /**
      * Constructeur utilisant l'API riot

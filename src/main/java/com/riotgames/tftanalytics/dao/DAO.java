@@ -7,5 +7,5 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class DAO {
 	protected static SessionFactory factory = new MetadataSources(new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build()).getMetadataBuilder().build().getSessionFactoryBuilder().build();
-	protected static Session session = factory.openSession();
+	protected static Session session;
 }

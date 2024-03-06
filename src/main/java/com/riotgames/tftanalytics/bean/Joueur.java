@@ -62,7 +62,7 @@ public class Joueur {
 			infos = api.getAccountInfos(this.name);
 			this.joueurRank = (String) infos.get("tier");
 			this.winRate = (double) (Integer) infos.get("wins") / ((Integer) infos.get("losses") + (Integer) infos.get("wins")) * 100;
-		} catch (RiotException e) {
+		} catch (Exception e) {
 			this.joueurRank = "None";
 			this.winRate = -1;
 			System.err.println(e);

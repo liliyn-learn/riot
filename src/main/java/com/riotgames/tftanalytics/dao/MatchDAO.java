@@ -8,7 +8,13 @@ import com.riotgames.tftanalytics.bean.Match;
 
 
 public class MatchDAO extends DAO {
+	
+	public MatchDAO() {
+		super();
+	}
+
 	public void save(Match e) {
+		session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		try {
 			session.save(e);
@@ -17,9 +23,11 @@ public class MatchDAO extends DAO {
 			t.rollback();
 			System.err.println(exep.getMessage());
 		}
+		session.close();
 	}
 	
 	public Match get(int id) {
+		session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		Match e = null;
 		try {
@@ -29,6 +37,7 @@ public class MatchDAO extends DAO {
 			t.rollback();
 			System.err.println(exep.getMessage());
 		}
+		session.close();
 		return e;
 	}
 }

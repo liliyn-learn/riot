@@ -9,8 +9,15 @@ import org.hibernate.Transaction;
 import com.riotgames.tftanalytics.bean.Joueur;
 
 
+
 public class JoueurDAO extends DAO {
+	
+	public JoueurDAO() {
+		super();
+	}
+
 	public void save(Joueur e) {
+		session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		try {
 			session.save(e);
@@ -19,9 +26,11 @@ public class JoueurDAO extends DAO {
 			t.rollback();
 			System.err.println(exep.getMessage());
 		}
+		session.close();
 	}
 	
 	public Joueur get(int id) {
+		session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		Joueur e = null;
 		try {
@@ -31,6 +40,7 @@ public class JoueurDAO extends DAO {
 			t.rollback();
 			System.err.println(exep.getMessage());
 		}
+		session.close();
 		return e;
 	}
 }

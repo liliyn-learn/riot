@@ -12,4 +12,8 @@ public class RiotException extends Exception {
 	public String toString() {
 		return "Error " + mess;
 	}
+
+	public String getMess() {
+		return mess;
+	}
 }

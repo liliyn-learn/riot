@@ -77,6 +77,9 @@ public class RiotAPI {
 	public HashMap<Object, Object> getAccountInfos(String pseudo) throws RiotException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String response = null;
+		if (pseudo == null || pseudo.isEmpty()) {
+			return null;
+		}
 		pseudo = URLEncoder.encode(pseudo, StandardCharsets.UTF_8);
 		String urlAPI = "https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-name/"+pseudo;
 		String id = "";
