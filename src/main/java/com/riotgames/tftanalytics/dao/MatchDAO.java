@@ -1,11 +1,9 @@
 package com.riotgames.tftanalytics.dao;
 
-import javax.persistence.RollbackException;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.riotgames.tftanalytics.bean.Match;
 import com.riotgames.tftanalytics.bean.Match;
 
 

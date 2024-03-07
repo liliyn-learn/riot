@@ -24,9 +24,7 @@
 				<td>${nameLpMap.get(name)}</td>
 				<td><form action="meilleursJoueurs" method="post">
 				<input type="hidden" name="summonerName" value="${name}" />
-				<button type="submit">
-				Acceder au profil
-				</button>
+				<input type="submit" value="Acceder au profil"/>
 				</form></td>
 			</tr>
 		</c:forEach>

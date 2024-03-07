@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.riotgames.tftanalytics.bean.Joueur;
 import com.riotgames.tftanalytics.bean.Match;
 import com.riotgames.tftanalytics.bean.MatchAnalyzer;
-import com.riotgames.tftanalytics.dao.JoueurDAO;
-import com.riotgames.tftanalytics.dao.MatchDAO;
 import com.riotgames.tftanalytics.exception.RiotException;
 
 import javax.servlet.annotation.WebServlet;
@@ -206,10 +204,10 @@ public class RiotServlet extends HttpServlet {
 				matchsMap.put(match, matchAnalyzer.getPlacement());
 			}
 			
-			new JoueurDAO().save(joueur);
-			for (Match m : matchsMap.keySet()) {
-				new MatchDAO().save(m);
-			}
+//			new JoueurDAO().save(joueur);
+//			for (Match m : matchsMap.keySet()) {
+//				new MatchDAO().save(m);
+//			}
 
 			double sum = 0;
 			ArrayList<Double> presences = new ArrayList<>(unitsPresence.values());
@@ -244,6 +242,7 @@ public class RiotServlet extends HttpServlet {
 			request.setAttribute("erreur", "Joueur Introuvable : "+e.getMess());
 			request.getRequestDispatcher("index.jsp").forward(request, response);
 			System.err.println(e);
+			e.printStackTrace();
 		}
 	}
 

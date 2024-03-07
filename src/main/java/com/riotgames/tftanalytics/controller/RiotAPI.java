@@ -5,21 +5,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.riotgames.tftanalytics.exception.RiotException;
 
 /*
@@ -285,7 +280,7 @@ public class RiotAPI {
 			return response;
 		} catch (Exception e) {
 		    if (e.getMessage().contains("HTTP response code: 429")) {
-				throw new RiotException("Limite de requête atteinte, veullez réessayer plus tard");
+				throw new RiotException("Limite de requête atteinte, veuillez réessayer plus tard");
 		    } else {
 				throw new RiotException("Probleme lors de la connexion à l'API Riot");
 		    }
