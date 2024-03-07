@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+	<a href="index.jsp">Recherche</a>
 	<h1>Les meilleurs joueurs du serveur :</h1>
 	<table>
 		<tr>
@@ -21,19 +22,25 @@
 			<tr>
 				<td>${name}</td>
 				<td>${nameLpMap.get(name)}</td>
-				<td><button class="profileButton" data-player="${name}">Acceder
-						au profil</button></td>
+				<td><form action="meilleursJoueurs" method="post">
+				<input type="hidden" name="summonerName" value="${name}" />
+				<button type="submit">
+				Acceder au profil
+				</button>
+				</form></td>
 			</tr>
 		</c:forEach>
 	</table>
-	<script >
-		const buttons = document.getElementsByClassName("profileButton");
-		Array.from(buttons).forEach(button => {
-		button.addEventListener('click', function() {
-			const playerName = button.dataset.player;
-			window.location.href = '/tft-match-viewer/riotprofile?player=' + playerName;
-			});
+<!-- 	<script >
+		document.addEventListener('DOMContentLoaded', function() {
+		    const buttons = document.querySelectorAll('.profileButton');
+		    buttons.forEach(button => {
+		        button.addEventListener('click', function() {
+		            const playerName = encodeURIComponent(this.getAttribute('data-player'));
+		            window.location.href = `riotservlet?pseudo=${playerName}`;
+		        });
+		    });
 		});
-	</script>
+	</script> -->
 </body>
 </html>

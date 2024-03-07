@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="style.css">
-		<title>riot here</title>
+		<title>Recherche de joueurs</title>
 	</head>
 	<body>
 		<div class="form">
@@ -20,5 +20,6 @@
 			    <input type="submit" value="Rechercher" />
 			</form>
 		</div>
+		<a href="${pageContext.request.contextPath}/meilleursJoueurs">Liste des meilleurs joueurs</a>
 	</body>
 </html>

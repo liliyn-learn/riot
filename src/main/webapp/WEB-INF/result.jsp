@@ -31,7 +31,7 @@
 			<td>${joueur.name}</td>
 			<td>${joueur.rank}</td>
 			<c:if test="${joueur.winRate!=-1}">
-				<td>${joueur.winRate}%</td>
+				<td>${fn:substring(joueur.winRate, 0, 4)}%</td>
 			</c:if>
 			<c:if test="${joueur.winRate==-1}">
 				<td>Donnée insuffisantes</td>
@@ -44,6 +44,7 @@
 		<tr>
 			<th>Match ID</th>
 			<th>Participants PUUIDs</th>
+			<th>Placement</th>
 		</tr>
 		<c:forEach var="match" items="${matchsMap.keySet()}">
 			<tr>
@@ -73,7 +74,7 @@
 			</tr>
 		</c:forEach>
 	</table>
-	
+
 	<a href="index.jsp">Nouvelle Recherche</a>
 </body>
 </html>

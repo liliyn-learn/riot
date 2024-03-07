@@ -29,6 +29,26 @@ public class RiotAPI {
 	private static HttpURLConnection connection;
 
 	/**
+	 * @param 	puuid 	Le puuid du joueur
+	 * @return 			null en cas d'erreur, sinon le pseudo du joueur
+	 * @throws RiotException 
+	 */
+	public String getPseudo(String puuid) throws RiotException {
+		String response = "";
+		String urlAPI = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/"+puuid;
+		response = askAPI(urlAPI);
+		if (response == null || response.isEmpty()) {
+			return null;
+		}
+		try {
+			HashMap<String, String> map = new ObjectMapper().readValue(response, HashMap.class);
+			return map.get("gameName");
+		} catch (Exception e) {
+			throw new RiotException("Données reçu invalides");
+		}
+	}
+	
+	/**
 	 * @param 	pseudo 	Le pseudo du joueur
 	 * @param 	tag 	Une information supplémentaire pour identfier le joueur
 	 * @return 			null en cas d'erreur, sinon le puuid du joueur
@@ -48,30 +68,38 @@ public class RiotAPI {
 			throw new RiotException("Données reçu invalides");
 		}
 	}
-
+	
 	/**
-	 * @param 	puuid 	Le puuid du joueur
-	 * @return 			null en cas d'erreur, sinon le pseudo du joueur
+	 * @param 	pseudo 	Le pseudo du joueur
+	 * @return 			null en cas d'erreur, sinon le puuid du joueur
 	 * @throws RiotException 
 	 */
-	public String getPseudo(String puuid) throws RiotException {
-		String response = "";
-		String urlAPI = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/"+puuid;
+	public String getPuuid(String pseudo) throws RiotException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String response = null;
+		if (pseudo == null || pseudo.isEmpty()) {
+			return null;
+		}
+		pseudo = URLEncoder.encode(pseudo, StandardCharsets.UTF_8);
+		String urlAPI = "https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-name/"+pseudo;
+		String id = "";
 		response = askAPI(urlAPI);
 		if (response == null || response.isEmpty()) {
 			return null;
 		}
 		try {
-			HashMap<String, String> map = new ObjectMapper().readValue(response, HashMap.class);
-			return map.get("gameName");
+			HashMap<Object, Object> map = objectMapper.readValue(response, new TypeReference<HashMap<Object,Object>>(){});
+			id = (String) map.get("puuid");
 		} catch (Exception e) {
 			throw new RiotException("Données reçu invalides");
 		}
+
+		return id;
 	}
 
 	/**
 	 * @param 	pseudo 	Le pseudo du joueur
-	 * @return 			null en cas d'erreur, sinon des informations sur le joueur, comme son rang
+	 * @return 			null en cas d'erreur, sinon un fonction allant chercher des informations sur le joueur, comme son rang
 	 * @throws RiotException 
 	 */
 	public HashMap<Object, Object> getAccountInfos(String pseudo) throws RiotException {
@@ -237,7 +265,7 @@ public class RiotAPI {
 	 */
 	private String askAPI(String url) throws RiotException {
 		try {
-			URI uri = new URI(url);
+ 			URI uri = new URI(url);
 
 			connection = (HttpURLConnection) uri.toURL().openConnection();//bug encore avec certains pseudo très particuliers
 			connection.setRequestMethod("GET");
@@ -246,7 +274,7 @@ public class RiotAPI {
 			connection.setRequestProperty("Accept-Language", "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7");
 			connection.setRequestProperty("Accept-Charset", "application/x-www-form-urlencoded; charset=UTF-8");
 			connection.setRequestProperty("Origin", "https://developer.riotgames.com");
-			connection.setRequestProperty("X-Riot-Token", "RGAPI-b4538dd8-46c1-4052-9882-ad72964f0ffc");
+			connection.setRequestProperty("X-Riot-Token", "RGAPI-f17adcb3-a02a-4047-83d4-ef604411082f");
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 

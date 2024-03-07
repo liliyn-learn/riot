@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +21,7 @@ import com.riotgames.tftanalytics.exception.RiotException;
 /**
  * Servlet implementation class RiotBest
  */
+@WebServlet("/meilleursJoueurs")
 public class RiotBestPlayersServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -52,7 +54,13 @@ public class RiotBestPlayersServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		try {
+			String puuid = new RiotAPI().getPuuid(request.getParameter("summonerName"));
+			response.sendRedirect("riotservlet?puuid="+puuid);
+		} catch (RiotException e) {
+			System.err.println(e);
+			e.printStackTrace();
+		}
 	}
 	
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
