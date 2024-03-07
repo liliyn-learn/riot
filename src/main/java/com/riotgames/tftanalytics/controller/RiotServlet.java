@@ -25,7 +25,6 @@ import com.riotgames.tftanalytics.dao.MatchDAO;
 import com.riotgames.tftanalytics.exception.RiotException;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 
 /**
  * Servlet implementation class RiotServlet
@@ -131,7 +130,7 @@ public class RiotServlet extends HttpServlet {
 		} catch (RiotException e) {
 			request.setAttribute("erreur", "Joueur Introuvable : "+e.getMess());
 			request.getRequestDispatcher("index.jsp").forward(request, response);
-			System.err.println(e);		
+			System.err.println(e);
 		}
 	}
 
@@ -139,6 +138,8 @@ public class RiotServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Joueur joueur = null;
+		HashMap<String, Double> unitsPresence = null;
 		try {
 			request.setCharacterEncoding("UTF-8");
 			String pseudo = request.getParameter("pseudo");
@@ -152,10 +153,15 @@ public class RiotServlet extends HttpServlet {
 				throw new RiotException("tag ne peut pas etre vide");
 			}
 			
-			Joueur joueur = new Joueur(pseudo, tag);
+			joueur = new Joueur(pseudo, tag);
 
-			HashMap<String, Double> unitsPresence = new HashMap<String, Double>();
-
+			unitsPresence = new HashMap<String, Double>();
+		} catch (RiotException e) {
+			request.setAttribute("erreur", "Joueur Introuvable : "+e.getMess());
+			request.getRequestDispatcher("index.jsp").forward(request, response);
+			System.err.println(e);
+		}
+		try {
 			// Utilisation de getMatchIds pour récupérer les IDs de matchs
 			RiotAPI api = new RiotAPI();
 

@@ -284,7 +284,11 @@ public class RiotAPI {
 			in.close();
 			return response;
 		} catch (Exception e) {
-			throw new RiotException("Probleme lors de la connexion à l'API Riot");
+		    if (e.getMessage().contains("HTTP response code: 429")) {
+				throw new RiotException("Limite de requête atteinte, veullez réessayer plus tard");
+		    } else {
+				throw new RiotException("Probleme lors de la connexion à l'API Riot");
+		    }
 		}
 	}
 }

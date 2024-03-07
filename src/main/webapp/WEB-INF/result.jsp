@@ -39,6 +39,22 @@
 		</tr>
 	</table>
 
+	<h2>Unités Favorites</h2>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Presence</th>
+		</tr>
+		<c:forEach var="maxKey" items="${mapMax.keySet()}">
+			<tr>
+				<td>${maxKey}</td>
+				<td>${fn:substring(mapMax.get(maxKey), 0, 4)}%</td>
+			</tr>
+		</c:forEach>
+	</table>
+
+	<a href="index.jsp">Nouvelle Recherche</a>
+
 	<h2>Matchs</h2>
 	<table>
 		<tr>
@@ -60,21 +76,5 @@
 			</tr>
 		</c:forEach>
 	</table>
-
-	<h2>Unités Favorites</h2>
-	<table>
-		<tr>
-			<th>Name</th>
-			<th>Presence</th>
-		</tr>
-		<c:forEach var="maxKey" items="${mapMax.keySet()}">
-			<tr>
-				<td>${maxKey}</td>
-				<td>${fn:substring(mapMax.get(maxKey), 0, 4)}%</td>
-			</tr>
-		</c:forEach>
-	</table>
-
-	<a href="index.jsp">Nouvelle Recherche</a>
 </body>
 </html>
