@@ -186,7 +186,7 @@ public class RiotServlet extends HttpServlet {
 				}
 				Match match = new Match(matchId, participantDetails); // Assurez-vous que le constructeur de Match accepte une List<String>
 				matchsMap.put(match, matchAnalyzer.getPlacement());
-			} 
+			}
 			
 			new JoueurDAO().save(joueur);
 			for (Match m : matchsMap.keySet()) {
