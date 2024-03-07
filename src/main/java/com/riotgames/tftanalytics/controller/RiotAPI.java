@@ -265,6 +265,7 @@ public class RiotAPI {
 	 */
 	private String askAPI(String url) throws RiotException {
 		try {
+			//System.out.println(url);
  			URI uri = new URI(url);
 
 			connection = (HttpURLConnection) uri.toURL().openConnection();//bug encore avec certains pseudo très particuliers

@@ -59,7 +59,6 @@ public class RiotBestPlayersServlet extends HttpServlet {
 			response.sendRedirect("riotservlet?puuid="+puuid);
 		} catch (RiotException e) {
 			System.err.println(e);
-			e.printStackTrace();
 		}
 	}
 	

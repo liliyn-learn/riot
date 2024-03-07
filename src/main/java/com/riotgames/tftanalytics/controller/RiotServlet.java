@@ -75,7 +75,13 @@ public class RiotServlet extends HttpServlet {
 				for (Object participantPuuidObject : participantPuuidsObjects) {
 					String participantPuuid = (String) participantPuuidObject; // Conversion explicite de Object à String
 					// Conversion de PUUID en pseudo
-					String participantName = encodeForURL(api.getPseudo(participantPuuid));
+					String participantName = null;
+					if (participantPuuid.equals(joueur.getId())) {
+						participantName = joueur.getName();
+					}
+					else {
+						participantName = encodeForURL(api.getPseudo(participantPuuid));
+					}
 					// Ajout du nom et du PUUID sous la forme "pseudo (PUUID)"
 					participantDetails.add(participantName + " (" + participantPuuid + ")");
 				}
@@ -170,7 +176,13 @@ public class RiotServlet extends HttpServlet {
 				for (Object participantPuuidObject : participantPuuidsObjects) {
 					String participantPuuid = (String) participantPuuidObject; // Conversion explicite de Object à String
 					// Conversion de PUUID en pseudo
-					String participantName = encodeForURL(api.getPseudo(participantPuuid));
+					String participantName = null;
+					if (participantPuuid.equals(joueur.getId())) {
+						participantName = joueur.getName();
+					}
+					else {
+						participantName = encodeForURL(api.getPseudo(participantPuuid));
+					}
 					// Ajout du nom et du PUUID sous la forme "pseudo (PUUID)"
 					participantDetails.add(participantName + " (" + participantPuuid + ")");
 				}

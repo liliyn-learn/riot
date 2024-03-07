@@ -70,7 +70,7 @@
 		<c:forEach var="maxKey" items="${mapMax.keySet()}">
 			<tr>
 				<td>${maxKey}</td>
-				<td>${mapMax.get(maxKey)}%</td>
+				<td>${fn:substring(mapMax.get(maxKey), 0, 4)}%</td>
 			</tr>
 		</c:forEach>
 	</table>
