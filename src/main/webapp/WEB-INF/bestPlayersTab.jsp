@@ -22,7 +22,7 @@
 			<tr>
 				<td>${name}</td>
 				<td>${nameLpMap.get(name)}</td>
-				<td><form action="meilleursJoueurs" method="post">
+				<td><form action="riotbestplayers" method="post">
 				<input type="hidden" name="summonerName" value="${name}" />
 				<input type="submit" value="Acceder au profil"/>
 				</form></td>

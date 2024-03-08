@@ -27,7 +27,6 @@ import javax.servlet.annotation.WebServlet;
 /**
  * Servlet implementation class RiotServlet
  */
-@WebServlet("/RiotServlet")
 public class RiotServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

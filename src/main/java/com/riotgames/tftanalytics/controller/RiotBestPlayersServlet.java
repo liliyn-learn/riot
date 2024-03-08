@@ -20,7 +20,6 @@ import com.riotgames.tftanalytics.exception.RiotException;
 /**
  * Servlet implementation class RiotBest
  */
-@WebServlet("/meilleursJoueurs")
 public class RiotBestPlayersServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

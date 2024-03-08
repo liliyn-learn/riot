@@ -20,6 +20,6 @@
 			    <input type="submit" value="Rechercher" />
 			</form>
 		</div>
-		<a href="${pageContext.request.contextPath}/meilleursJoueurs">Liste des meilleurs joueurs</a>
+		<a href="${pageContext.request.contextPath}/riotbestplayers">Liste des meilleurs joueurs</a>
 	</body>
 </html>
